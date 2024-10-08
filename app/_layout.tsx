@@ -1,37 +1,26 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { AudioPlayerProvider } from "@/context/AudioProvider";
+import { ModalProvider } from "@/context/ModalProvider";
+import { Stack } from "expo-router/stack";
+import "../global.css";
+import { ToastProvider } from "@/context/ToastProvider";
+import Hotkeys from "@/components/Shared/Hotkeys";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function Layout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <GluestackUIProvider>
+      <ModalProvider>
+        <ToastProvider>
+          <AudioPlayerProvider>
+            <Stack
+              screenOptions={{
+                headerRight: () => <Hotkeys />,
+                contentStyle: { backgroundColor: "#f5f5f5" },
+              }}
+            />
+          </AudioPlayerProvider>
+        </ToastProvider>
+      </ModalProvider>
+    </GluestackUIProvider>
   );
 }
